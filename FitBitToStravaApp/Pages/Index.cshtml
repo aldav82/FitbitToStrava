@@ -1,0 +1,150 @@
+﻿
+@page
+
+@using DataObjects.Tools
+@using Microsoft.AspNetCore.Authentication
+
+@model IndexModel
+@{
+    ViewData["Title"] = "Home page";
+    var formattedDate = Model.LastCheckedDate.ToString("yyyy-MM-dd");
+}
+
+@section Scripts {
+
+    <script>
+
+
+        var changeFromDateObject = function (selectedDate) {
+             // Format the selected date to "yyyyMMdd"
+            const formattedDate = $.datepicker.formatDate("yymmdd", selectedDate);
+
+            // Get the base page URL from a data attribute
+            const pageUrl = $(".datepicker").data("page-url");
+
+            // Construct the final URL with the query parameter
+            const url = `${pageUrl}?date=${formattedDate}`;
+
+            // Navigate to the generated URL
+            window.location.href = url;
+        };
+
+        var changeDate = function (selectedDate) {
+             // Format the selected date to "yyyyMMdd"
+            changeFromDateObject($.datepicker.parseDate("yy-mm-dd", selectedDate));
+        };
+
+        $(document).ready(function () {
+            $('.datepicker').datepicker({
+                dateFormat: "yy-mm-dd",
+                onSelect: function (selectedDate) {
+                    changeDate(selectedDate);
+                }
+            });
+             // Set the initial value of the datepicker from the server
+            var initialDate = $(".datepicker").data("initial-date");
+            if (initialDate) {
+                $(".datepicker").datepicker("setDate", initialDate);
+            }
+
+            $("[name='previousDay']").click(function() {
+                var dateStr = $(".datepicker").val();
+                var selectedDate = $.datepicker.parseDate("yy-mm-dd", dateStr);
+                selectedDate.setDate(selectedDate.getDate() - 1);
+                changeFromDateObject(selectedDate);
+            });
+
+            $("[name='nextDay']").click(function() {
+                var dateStr = $(".datepicker").val();
+                var selectedDate = $.datepicker.parseDate("yy-mm-dd", dateStr);
+                selectedDate.setDate(selectedDate.getDate() + 1);
+                changeFromDateObject(selectedDate);
+            });
+        });
+    </script>
+}
+
+<div class="text-center">
+    <h1 class="display-4">Welcome</h1>
+
+    
+    <div class="row d-flex justify-content-center">
+        <div class="col col-1">
+            <button type="button" name="previousDay" class="btn btn-outline-dark" data-toggle="tooltip" data-placement="top" aria-label="Previous day" title="Previous day">
+                <i class="bi bi-caret-left-square" aria-hidden="true"></i>
+
+            </button>
+        </div>
+        <div class="form-group col col-2">
+            <div class="input-group date" data-provide="datepicker">
+                <input type="text" name="datepicker" data-initial-date="@formattedDate" class="datepicker form-control" aria-label="Selected date" data-page-url="@Url.Page("/Index")">
+                <span class="input-group-text" id="basic-addon2"><i class="bi bi-calendar"></i></span>
+            </div>
+        </div>
+        <div class="col col-1">
+            <button type="button" name="nextDay" class="btn btn-outline-dark" data-toggle="tooltip" data-placement="top" aria-label="Next day" title="Next day">
+                <i class="bi bi-caret-right-square" aria-hidden="true"></i>
+
+            </button>
+
+        </div>
+    </div>
+    <form method="post">
+    <table class="table">
+        <thead>
+            <tr>
+                    <th scope="col">#</th>
+                    <th scope="col">Date</th>
+                    <th scope="col">Activity</th>
+                    <th scope="col">Type</th>
+                    <th scope="col">Upload Status</th>
+                <th scope="col">Actions</th>
+            </tr>
+        </thead>
+        <tbody>
+            @{
+                foreach (var item in Model.Activities)
+                {
+                    <tr>
+                        <th scope="row">@item.ActivityId</th>
+                        <td>@item.StartDate</td>
+                            <td>@item.Name </td>
+                            <td>@item.ActivityType.ToString() / @item.DistanceKm.ToString("F2") Km </td>
+                            <td>@item.UploadStatus</td>
+                            <td>
+                                @if (!item.Migrated && await this.HttpContext.AuthenticateAsync(ApplicationType.Strava) is { Succeeded: true })
+                                {
+
+                                    <button type="submit" class="btn btn-outline-primary" asp-page-handler="Migrate" asp-route-id="@item.ActivityId" asp-route-date="@Model.LastCheckedDate"
+                                            data-toggle="tooltip" data-placement="top" title="Migrate">
+                                        <i class="bi bi-cloud-upload" data-toggle="tooltip" data-placement="top" title="Migrate" aria-hidden="true"></i>
+                                    </button>
+                                }
+                                @if (item.Migrated && !item.StravaError)
+                                {
+                                    <i class="bi bi-check-lg text-success" data-toggle="tooltip" data-placement="top" title="Migrated" aria-label="Migrated"></i>
+                                }
+                                @if (item.StravaError)
+                                {
+                                    <i class="bi bi-exclamation-triangle text-danger-emphasis" data-toggle="tooltip" data-placement="top" title="@item.MigrationError" data-html="true" aria-label="Migration error"></i>
+                                }
+
+                                @if (item.IsProcessing)
+                                {
+                                    <button class="btn btn-outline-primary" type="submit" asp-page-handler="Refresh" asp-route-id="@item.ActivityId" asp-route-date="@Model.LastCheckedDate"
+                                            data-toggle="tooltip" data-placement="top" title="Check Status">
+                                        <i class="bi bi-arrow-clockwise" aria-hidden="true"></i>
+                                    </button>
+                                }
+                            </td>
+                            
+                    </tr>
+                }
+
+            }
+        </tbody>
+    </table>
+    </form>
+    
+    
+</div>

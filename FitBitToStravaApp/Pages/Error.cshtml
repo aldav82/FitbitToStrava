@@ -1,0 +1,18 @@
+﻿@page
+@using DataObjects.Tools
+@model ErrorModel
+@{
+    ViewData["Title"] = "Error";
+}
+
+<h1 class="text-danger">Error.</h1>
+<h2 class="text-danger">An error occurred while processing your request.</h2>
+
+@if (Model.App == ApplicationType.Fitbit)
+{
+    <p>
+        An error occurred while accessing Fitbit
+        <strong>Error code:</strong> <code>@Model.ErrorCode</code>
+        <strong>@Model.Message</strong>
+    </p>
+}

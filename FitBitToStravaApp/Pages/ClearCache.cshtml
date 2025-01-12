@@ -1,0 +1,26 @@
+﻿@page
+@model FitBitToStravaApp.Pages.ClearCacheModel
+@{
+    var homePage = Model.LinkGenerator.GetPathByPage("/Index");
+}
+<h1>This page will redirect shortly...</h1>
+<script>
+
+    deleteAllCookies();
+
+     setTimeout(() => {
+        window.location.href = "@homePage";
+    }, 3000);
+
+    function deleteAllCookies() {
+        console.log("deleting cookies..");
+        const cookies = document.cookie.split(";");
+
+        for (let i = 0; i < cookies.length; i++) {
+            const cookie = cookies[i];
+            const eqPos = cookie.indexOf("=");
+            const name = eqPos > -1 ? cookie.substr(0, eqPos) : cookie;
+            document.cookie = name + "=;expires=Thu, 01 Jan 1970 00:00:00 GMT";
+        }
+    }
+</script> 

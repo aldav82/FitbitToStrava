@@ -1,0 +1,84 @@
+﻿@using DataObjects.Tools
+@using Microsoft.AspNetCore.Authentication
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>@ViewData["Title"] - FitBitToStravaApp</title>
+    <link href="~/lib/bootstrap/css/bootstrap.min.css" rel="stylesheet" asp-append-version="true" />
+    <link rel="stylesheet" href="~/css/site.css" asp-append-version="true" />
+    <link rel="stylesheet" href="~/FitBitToStravaApp.styles.css" asp-append-version="true" />
+    <link href="~/lib/bootstrap-icons/font/bootstrap-icons.min.css" rel="stylesheet" />
+    <link href="~/lib/jquery-ui/themes/base/jquery-ui.min.css" rel="stylesheet" />
+</head>
+<body>
+    <header>
+        <nav class="navbar navbar-expand-sm navbar-toggleable-sm navbar-light bg-white border-bottom box-shadow mb-3">
+            <div class="container">
+                <a class="navbar-brand" asp-area="" asp-page="/Index">FitBitToStravaApp</a>
+                <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target=".navbar-collapse" aria-controls="navbarSupportedContent"
+                aria-expanded="false" aria-label="Toggle navigation">
+                    <span class="navbar-toggler-icon"></span>
+                </button>
+                <div class="navbar-collapse collapse d-sm-inline-flex justify-content-between">
+                    <ul class="navbar-nav flex-grow-1">
+                        <li class="nav-item">
+                            <a class="nav-link text-dark" asp-area="" asp-page="/Privacy">Privacy</a>
+                        </li>
+                    </ul>
+                </div>
+
+
+
+                @if (User.Identity?.IsAuthenticated == true)
+                {
+                    <div class="row">
+
+                        <div class="col-8">Welcome, @User.Identity.Name!
+                            <img style="height: 35px; width: 35px" src="@User.Claims.FirstOrDefault(c=>c.Type =="Image")?.Value" />
+                        </div>
+                        @if (await Context.AuthenticateAsync(ApplicationType.Strava) is { Succeeded: true })
+                        {
+                            <div class="col-2"> <i data-toggle="tooltip" data-placement="top" title="Strava Authenticated" 
+                                class="bi btn text-info-emphasis bi-strava" aria-hidden="true"></i></div>
+                        }
+                        else
+                        {
+                            <div class="col-2">
+                                <form method="get" asp-controller="Account" asp-action="StravaLogin">
+
+                                    <button type="submit" class="btn btn-outline-primary"
+                                            data-toggle="tooltip" data-placement="top" title="Loggin with Strava">
+                                        <i class="bi bi-strava" aria-hidden="true"></i>
+                                    </button>
+                            </form>
+                        </div>
+                        }
+                        <div class="col-2">
+                            <a asp-page="/Logout" data-toggle="tooltip" data-placement="top" title="Logout"  class="btn btn-outline-danger"><i class="bi bi-door-closed" aria-hidden="true"></i></a>
+                        </div>
+                    </div>   
+                }
+            </div>
+        </nav>
+    </header>
+    <div class="container">
+        <main role="main" class="pb-3">
+            @RenderBody()
+        </main>
+    </div>
+
+    <footer class="border-top footer text-muted">
+        <div class="container">
+            &copy; 2024 - FitBitToStravaApp - <a asp-area="" asp-page="/Privacy">Privacy</a>
+        </div>
+    </footer>
+    <script src="~/lib/jquery/jquery.min.js"></script>
+    <script src="~/lib/bootstrap/js/bootstrap.bundle.min.js"></script>
+    <script src="~/lib/jquery-ui/jquery-ui.min.js"></script>
+    <script src="~/js/site.js" asp-append-version="true"></script>
+    @await RenderSectionAsync("Scripts", required: false)
+</body>
+</html>
