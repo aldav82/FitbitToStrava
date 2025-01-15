@@ -10,7 +10,7 @@ using System.Text.Json;
 
 namespace StravaSDK
 {
-    public class StravaClient: IStravaClient
+    public class StravaClient : IStravaClient
     {
         private readonly string fitbitUrlActivities = "https://www.strava.com/api/v3/activities";
         private readonly string fitbitUrlUploads = "https://www.strava.com/api/v3/uploads";
@@ -142,7 +142,7 @@ namespace StravaSDK
             }
         }
 
-        public async  Task<StravaUploadData> CreateTcxActivityAsync(BaseActivity activity)
+        public async Task<StravaUploadData> CreateTcxActivityAsync(BaseActivity activity)
         {
             if (!activity.ContainsTcx)
             {
@@ -151,8 +151,8 @@ namespace StravaSDK
 
             StravaUploadData data = new StravaUploadData();
 
-            
-                // Prepare multipart form-data content
+
+            // Prepare multipart form-data content
             var content = new MultipartFormDataContent
             {
                 { new StringContent("tcx"), "data_type" }, // Data type parameter

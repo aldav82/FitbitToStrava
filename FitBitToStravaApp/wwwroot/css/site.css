@@ -20,3 +20,20 @@ html {
 body {
   margin-bottom: 60px;
 }
+
+.strava-logo {
+    height: 3em;
+}
+
+.strava-connect {
+    height: 48px;
+    width: 190px;
+    border: 0px;
+    padding: 0px;
+    background-size: cover;
+    background-color: white;
+    background-image: url(../images/btn_strava_connectwith_light.png);
+}
+.strava-connect:hover {
+    background-image: url(../images/btn_strava_connectwith_orange.png);
+}
