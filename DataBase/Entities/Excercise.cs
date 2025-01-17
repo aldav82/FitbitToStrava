@@ -12,6 +12,8 @@ namespace DataBase.Entities
         public string StravaUploadError { get; set; }
         public string StravaUploadStatus { get; set; }
 
+        public long? StravaId { get; set; }
+
         public void MarkAsDuplicate(string user, DateTime date)
         {
             this.StravaUploadError = null;

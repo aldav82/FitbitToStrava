@@ -3,7 +3,9 @@
     public abstract class BaseActivity
     {
         public abstract ActivityType ActivityType { get; }
+        public ActivityType? MigrationActivityType { get; set; }
         public long ActivityId { get; set; }
+        public long? StravaActivityId { get; set; }
         public string Name { get; set; }
         public string Description { get; set; }
         public DateTime StartDate { get; set; }

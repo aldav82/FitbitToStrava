@@ -7,6 +7,7 @@ using StravaSDK.Types;
 using System.Globalization;
 using System.Net.Http.Headers;
 using System.Text.Json;
+using System.Text.Json.Serialization;
 
 namespace StravaSDK
 {
@@ -99,7 +100,9 @@ namespace StravaSDK
 
             if (response.IsSuccessful)
             {
+                var detailedActivity = JsonSerializer.Deserialize<StravaDetailedActivity>(response.Content);
                 data.Success = true;
+                data.StravaActivityId = detailedActivity.id;
             }
             else
             {
@@ -188,22 +191,20 @@ namespace StravaSDK
             return data;
         }
 
-        private static void FillNonDistanceExcerciseInformation(RestRequest request, BaseActivity activity, ActivityType? activityType = null)
+        private static void FillNonDistanceExcerciseInformation(RestRequest request, BaseActivity activity)
         {
-            if (activityType == null)
-            {
-                activityType = activity.ActivityType;
-            }
+            ActivityType? activityType = activity.MigrationActivityType != null ? activity.MigrationActivityType : activity.ActivityType;
             request.AddParameter(StravaParamName.name.ToString(), activity.Name);
             request.AddParameter(StravaParamName.sport_type.ToString(), activityType.Value.ConvertToStravaSportType().ToString());
+            request.AddParameter(StravaParamName.description.ToString(), "Migrated using https://fitbitmigrationapp.azurewebsites.net/");
             request.AddParameter(StravaParamName.type.ToString(), activityType.Value.ConvertToStravaActivityType().ToString());
             request.AddParameter(StravaParamName.start_date_local.ToString(), activity.StartDate.ToString("yyyy-MM-ddTHH:mm:ssZ", CultureInfo.InvariantCulture));
             request.AddParameter(StravaParamName.elapsed_time.ToString(), $"{activity.Duration.TotalSeconds}");
             request.AddParameter(StravaParamName.description.ToString(), activity.Description);
         }
-        private static void FillDistanceExcerciseInformation(RestRequest request, BaseActivity activity, ActivityType? activityType = null)
+        private static void FillDistanceExcerciseInformation(RestRequest request, BaseActivity activity)
         {
-            FillNonDistanceExcerciseInformation(request, activity, activityType);
+            FillNonDistanceExcerciseInformation(request, activity);
             request.AddParameter(StravaParamName.distance.ToString(), activity.Distance);
         }
     }

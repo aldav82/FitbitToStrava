@@ -3,6 +3,7 @@
 
 @using DataObjects.Tools
 @using Microsoft.AspNetCore.Authentication
+@using DataObjects.Activities;
 
 @model IndexModel
 @{
@@ -60,6 +61,24 @@
                 selectedDate.setDate(selectedDate.getDate() + 1);
                 changeFromDateObject(selectedDate);
             });
+
+            $(".custom-activity-type").change(function() {
+                var activityId = $(this).data("activityid");
+                var relatedSubmit = $("#submit-"+ activityId)
+                var selectedValue = $(this).val();
+                
+                const params = relatedSubmit.attr("formaction").split('&'); 
+                var formAction = "";
+                for (var i = 0; i< params.length; i++){
+                    var currentParam = params[i];
+                    if (currentParam.startsWith("migrationActivityType")) {
+                        currentParam = "migrationActivityType=" + selectedValue;
+                    }
+                    var unionChar = (i == params.length - 1) ? "" : "&";
+                    formAction += (currentParam + unionChar);
+                }
+                relatedSubmit.attr("formaction", formAction);
+            });
         });
     </script>
 }
@@ -109,20 +128,47 @@
                             <th class="d-none  d-lg-table-cell" scope="row">@item.ActivityId</th>
                             <td class="d-none d-md-table-cell d-lg-table-cell">@item.StartDate</td>
                             <td>@item.Name </td>
-                            <td>@item.ActivityType.ToString() / @item.DistanceKm.ToString("F2") Km </td>
-                            <td>@item.UploadStatus</td>
+                            <td>
+
+                                @if (!item.Migrated && item.ActivityType == ActivityType.Treadmill &&  await this.HttpContext.AuthenticateAsync(ApplicationType.Strava) is { Succeeded: true })
+                                {
+
+                                    <select class="custom-activity-type" name="@($"customActivityType-{item.ActivityId}")" data-activityId = "@item.ActivityId">
+                                        <option value="@ActivityType.Treadmill" selected="selected">Treadmill</option>
+                                        <option value="@ActivityType.Walk">Walk</option>
+                                        <option value="@ActivityType.Run">Run</option>
+                                    </select>
+                                } else {
+                                    @item.ActivityType.ToString()
+                                }
+                                / @item.DistanceKm.ToString("F2") Km
+                            </td>
+                            <td>
+                                @item.UploadStatus                                
+                            </td>
                             <td>
                                 @if (!item.Migrated && await this.HttpContext.AuthenticateAsync(ApplicationType.Strava) is { Succeeded: true })
                                 {
 
-                                    <button type="submit" class="btn btn-outline-primary" asp-page-handler="Migrate" asp-route-id="@item.ActivityId" asp-route-date="@Model.LastCheckedDate"
+                                    <button type="submit" class="btn btn-outline-primary" asp-page-handler="Migrate" id="@($"submit-{item.ActivityId}")"
+                                            asp-route-id="@item.ActivityId" 
+                                            asp-route-date="@Model.LastCheckedDate"
+                                            asp-route-migrationActivityType="@item.ActivityType"
                                             data-toggle="tooltip" data-placement="top" title="Migrate">
                                         <i class="bi bi-cloud-upload" data-toggle="tooltip" data-placement="top" title="Migrate" aria-hidden="true"></i>
                                     </button>
                                 }
                                 @if (item.Migrated && !item.StravaError)
                                 {
-                                    <i class="bi bi-check-lg text-success" data-toggle="tooltip" data-placement="top" title="Migrated" aria-label="Migrated"></i>
+
+                                    @if (@item.StravaActivityId != null)
+                                    {
+                                        <a target="_blank" href='@($"https://www.strava.com/activities/" + item.StravaActivityId)'>Watch in Strava</a>
+                                    }
+                                    else
+                                    {
+                                        <i class="bi bi-check-lg text-success" data-toggle="tooltip" data-placement="top" title="Migrated" aria-label="Migrated"></i>
+                                    }
                                 }
                                 @if (item.StravaError)
                                 {
@@ -136,6 +182,8 @@
                                         <i class="bi bi-arrow-clockwise" aria-hidden="true"></i>
                                     </button>
                                 }
+
+                                
                             </td>
                             
                     </tr>

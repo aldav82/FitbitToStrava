@@ -15,9 +15,7 @@ namespace FitBitToStravaApp.Pages
     public class IndexModel : PageModel
     {
         private readonly ILogger<IndexModel> _logger;
-        private readonly IConfigRepository _config;
         private readonly IExcerciseRepository excerciseRepository;
-        private readonly IStravaClient stravaClient;
         private readonly MigrateActivityService _migrateActivityService;
         private readonly CheckUploadStatusService _checkUploadStatusService;
         private DateTime checkDate = DateTime.Now.AddDays(1);
@@ -40,13 +38,11 @@ namespace FitBitToStravaApp.Pages
 
         private IFitbitClient _fitbitClient;
 
-        public IndexModel(ILogger<IndexModel> logger, IFitbitClient fitbitClient, IConfigRepository config, IExcerciseRepository excerciseRepository, IStravaClient stravaClient,
+        public IndexModel(ILogger<IndexModel> logger, IFitbitClient fitbitClient, IExcerciseRepository excerciseRepository, 
             MigrateActivityService migrateActivityService, CheckUploadStatusService checkUploadStatusService)
         {
             _fitbitClient = fitbitClient;
             _logger = logger;
-            _config = config;
-            this.stravaClient = stravaClient;
             this.excerciseRepository = excerciseRepository;
             _migrateActivityService = migrateActivityService;
             _checkUploadStatusService = checkUploadStatusService;
@@ -80,14 +76,15 @@ namespace FitBitToStravaApp.Pages
                 item.UploadStatus = activity.StravaUploadStatus;
                 item.UploadId = activity.StravaUploadId;
                 item.MigrationError = activity.StravaUploadError;
+                item.StravaActivityId = activity.StravaId;
             }
 
         }
 
-        public async Task<IActionResult> OnPostMigrateAsync(long id, [FromQuery] DateTime date)
+        public async Task<IActionResult> OnPostMigrateAsync(long id, [FromQuery] DateTime date, [FromQuery] ActivityType? migrationActivityType)
         {
 
-            await _migrateActivityService.ExecuteAsync(id, date, User.GetFitbitToken(), User.GetUserId());
+            await _migrateActivityService.ExecuteAsync(id, date, User.GetFitbitToken(), User.GetUserId(), migrationActivityType);
             return RedirectToPage(new {date= date.ToString("yyyyMMdd") });
         }
 
@@ -98,5 +95,7 @@ namespace FitBitToStravaApp.Pages
             await _checkUploadStatusService.ExecuteAsync(id, date, User.GetUserId(), User.GetFitbitToken());
             return RedirectToPage(new { date = date.ToString("yyyyMMdd") });
         }
+
+
     }
 }

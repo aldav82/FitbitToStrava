@@ -23,7 +23,7 @@ namespace Services
             _excerciseRepository = excerciseRepository;
             _logger = logger;
         }
-        public async Task ExecuteAsync(long activityId, DateTime date, string fitbitToken, string userId)
+        public async Task ExecuteAsync(long activityId, DateTime date, string fitbitToken, string userId, ActivityType? migrationActivityType = null)
         {
             _logger.LogTrace($"Retrieving activity information from Fitbit for activityId {activityId}");
             var migrationData = await _fitbitClient.GetActivityLogsListByIdAsync(date, activityId);
@@ -33,6 +33,7 @@ namespace Services
             }
 
             var activity = await FitbitToDataObjects.RetrieveActivityAsync(migrationData, fitbitToken);
+            activity.MigrationActivityType = migrationActivityType;
             _logger.LogTrace($"Creating activity in Strava for activityId {activityId}");
             var createdResult = await this._stravaClient.CreateActivities(new List<BaseActivity>() { activity });
             foreach (var item in createdResult.Where(c => c.Success))
@@ -45,6 +46,7 @@ namespace Services
                     StravaUploadError = item.Error,
                     StravaUploadId = item.UploadId,
                     StravaUploadStatus = item.Status,
+                    StravaId = item.StravaActivityId
                 });
             }
 

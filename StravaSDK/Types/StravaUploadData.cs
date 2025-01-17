@@ -11,6 +11,7 @@ namespace StravaSDK.Types
         public bool Success { get; set; }
         public long ActivityId { get; set; }
         public long? UploadId { get; set; }
+        public long? StravaActivityId { get; set; }
         public string Error { get; set; }
         public string Status { get; set; }
     }
