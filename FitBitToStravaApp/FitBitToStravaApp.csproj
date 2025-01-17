@@ -31,4 +31,10 @@
     <ProjectReference Include="..\StravaSDK\StravaSDK.csproj" />
   </ItemGroup>
 
+  <ItemGroup>
+    <None Update="fitToStravaConfig.sqlite">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </None>
+  </ItemGroup>
+
 </Project>

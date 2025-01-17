@@ -69,19 +69,19 @@
 
     
     <div class="row d-flex justify-content-center">
-        <div class="col col-1">
+        <div class="col col-2 col-md-1">
             <button type="button" name="previousDay" class="btn btn-outline-dark" data-toggle="tooltip" data-placement="top" aria-label="Previous day" title="Previous day">
                 <i class="bi bi-caret-left-square" aria-hidden="true"></i>
 
             </button>
         </div>
-        <div class="form-group col col-2">
+        <div class="form-group col col-6 col-md-2">
             <div class="input-group date" data-provide="datepicker">
                 <input type="text" name="datepicker" data-initial-date="@formattedDate" class="datepicker form-control" aria-label="Selected date" data-page-url="@Url.Page("/Index")">
                 <span class="input-group-text" id="basic-addon2"><i class="bi bi-calendar"></i></span>
             </div>
         </div>
-        <div class="col col-1">
+        <div class="col col-2 col-md-1">
             <button type="button" name="nextDay" class="btn btn-outline-dark" data-toggle="tooltip" data-placement="top" aria-label="Next day" title="Next day">
                 <i class="bi bi-caret-right-square" aria-hidden="true"></i>
 
@@ -93,8 +93,8 @@
     <table class="table">
         <thead>
             <tr>
-                    <th scope="col">#</th>
-                    <th scope="col">Date</th>
+                    <th class="d-none d-lg-table-cell" scope="col">#</th>
+                    <th class="d-none d-md-table-cell d-lg-table-cell" scope="col">Date</th>
                     <th scope="col">Activity</th>
                     <th scope="col">Type</th>
                     <th scope="col">Upload Status</th>
@@ -106,8 +106,8 @@
                 foreach (var item in Model.Activities)
                 {
                     <tr>
-                        <th scope="row">@item.ActivityId</th>
-                        <td>@item.StartDate</td>
+                            <th class="d-none  d-lg-table-cell" scope="row">@item.ActivityId</th>
+                            <td class="d-none d-md-table-cell d-lg-table-cell">@item.StartDate</td>
                             <td>@item.Name </td>
                             <td>@item.ActivityType.ToString() / @item.DistanceKm.ToString("F2") Km </td>
                             <td>@item.UploadStatus</td>

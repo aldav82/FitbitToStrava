@@ -42,27 +42,31 @@
                                 Welcome, @User.Identity.Name!
                                 <img style="height: 35px; width: 35px" src="@User.Claims.FirstOrDefault(c=>c.Type =="Image")?.Value" />
                             </div>
-                            <div class="col-2"> <i data-toggle="tooltip" data-placement="top" title="Strava Authenticated" 
-                                class="bi btn text-info-emphasis bi-strava" aria-hidden="true"></i></div>
+                            <div class="col-2 offset-1 offset-md-0"> <i data-toggle="tooltip" data-placement="top" title="Strava Authenticated" 
+                                class="bi btn text-info-emphasis bi-strava" aria-hidden="true"></i>
+                            </div>
+                            <div class="align-content-center col-1 ">
+                                <a asp-page="/Logout" data-toggle="tooltip" data-placement="top" title="Logout"  class="btn btn-outline-danger"><i class="bi bi-door-closed" aria-hidden="true"></i></a>
+                            </div>
                         }
                         else
                         {
-                            <div class="align-content-center col-6">
+                            <div class="align-content-center col-12 col-md-6">
                                 Welcome, @User.Identity.Name!
                                 <img style="height: 35px; width: 35px" src="@User.Claims.FirstOrDefault(c=>c.Type =="Image")?.Value" />
                             </div>
-                            <div class="col-5">
+                            <div class="col-8 col-md-5">
                                 <form method="get" asp-controller="Account" asp-action="StravaLogin">
 
                                     <button type="submit" class="strava-connect"
                                             data-toggle="tooltip" data-placement="top" title="Loggin with Strava">
                                     </button>
                             </form>
-                        </div>
+                            </div>
+                            <div class="align-content-center col-1 offset-2 offset-md-0">
+                                <a asp-page="/Logout" data-toggle="tooltip" data-placement="top" title="Logout"  class="btn btn-outline-danger"><i class="bi bi-door-closed" aria-hidden="true"></i></a>
+                            </div>
                         }
-                        <div class="align-content-center col-1">
-                            <a asp-page="/Logout" data-toggle="tooltip" data-placement="top" title="Logout"  class="btn btn-outline-danger"><i class="bi bi-door-closed" aria-hidden="true"></i></a>
-                        </div>
                     </div>   
                 }
             </div>
