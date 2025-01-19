@@ -1,8 +1,6 @@
 ﻿using DataObjects.Activities;
 using Fitbit.Api.Portable.Models;
-using Fitbit.Api.Portable.OAuth2;
 using RestSharp;
-using System.Xml.Serialization;
 
 namespace FitbitSDK.Transformer
 {
@@ -10,34 +8,30 @@ namespace FitbitSDK.Transformer
     {
         public static async Task<BaseActivity> RetrieveActivityAsync(Activities activity, string accessToken)
         {
-            switch (activity.ActivityTypeId)
+            switch ((ActivityType)activity.ActivityTypeId)
             {
-                case 90013:
-                    //Walk
+                case ActivityType.Walk:
                     return await FillTcxActivity<Walk>(activity, accessToken);
-                case 90009:
-                    //Run
+                case ActivityType.Run:
                     return await FillTcxActivity<Run>(activity, accessToken);
-                case 15000:
-                    //Fitbit Autodetect
+                case ActivityType.FitbitAutodetect:
                     return await FillTcxActivity<Walk>(activity, accessToken);
 
-                case 91042:
-                    // Weights
+                case ActivityType.Weight:
                     return FillActivity<Weights>(activity);
-                case 91046:
-                // Core Training
-                case 91047:
-                    // Aerobics
+                case ActivityType.Training:
+                case ActivityType.Aerobics:
                     return FillActivity<Aerobics>(activity);
-                case 20049:
-                    // Treadmill
+                case ActivityType.Treadmill:
                     return FillActivity<Treadmill>(activity);
-                case 91052:
-                    // IceSkate
+                case ActivityType.Elliptic:
+                    return FillActivity<Elliptic>(activity);
+                case ActivityType.IceSkate:
                     return await FillTcxActivity<IceSkate>(activity, accessToken);
+                case ActivityType.Bicycle:
+                    return await FillTcxActivity<Bicycle>(activity, accessToken);
                 default:
-                    throw new NotSupportedException($"Activity type not supported {activity.ActivityTypeId}");
+                    return FillActivity<Aerobics>(activity);
 
             }
         }

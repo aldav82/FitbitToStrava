@@ -85,11 +85,13 @@ namespace StravaSDK
             {
                 case ActivityType.Weight:
                 case ActivityType.Aerobics:
+                case ActivityType.Elliptic:
                     FillNonDistanceExcerciseInformation(request, activity);
                     break;
                 case ActivityType.Walk:
                 case ActivityType.Treadmill:
                 case ActivityType.IceSkate:
+                case ActivityType.Bicycle:
                     FillDistanceExcerciseInformation(request, activity);
                     break;
             }
@@ -122,6 +124,8 @@ namespace StravaSDK
                 case ActivityType.IceSkate:
                 case ActivityType.Run:
                 case ActivityType.Treadmill:
+                case ActivityType.Elliptic:
+                case ActivityType.Bicycle:
                     if (activity.ContainsTcx)
                     {
 
@@ -196,7 +200,7 @@ namespace StravaSDK
             ActivityType? activityType = activity.MigrationActivityType != null ? activity.MigrationActivityType : activity.ActivityType;
             request.AddParameter(StravaParamName.name.ToString(), activity.Name);
             request.AddParameter(StravaParamName.sport_type.ToString(), activityType.Value.ConvertToStravaSportType().ToString());
-            request.AddParameter(StravaParamName.description.ToString(), "Migrated using https://fitbitmigrationapp.azurewebsites.net/");
+            request.AddParameter(StravaParamName.description.ToString(), "Migrateed from Fitbit (using personal migration assistant)");
             request.AddParameter(StravaParamName.type.ToString(), activityType.Value.ConvertToStravaActivityType().ToString());
             request.AddParameter(StravaParamName.start_date_local.ToString(), activity.StartDate.ToString("yyyy-MM-ddTHH:mm:ssZ", CultureInfo.InvariantCulture));
             request.AddParameter(StravaParamName.elapsed_time.ToString(), $"{activity.Duration.TotalSeconds}");

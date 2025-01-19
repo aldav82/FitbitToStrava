@@ -138,6 +138,14 @@
                                         <option value="@ActivityType.Walk">Walk</option>
                                         <option value="@ActivityType.Run">Run</option>
                                     </select>
+                                } else if (!item.Migrated && (item.ActivityType == ActivityType.Elliptic || item.ActivityType == ActivityType.Spinning) &&  await this.HttpContext.AuthenticateAsync(ApplicationType.Strava) is { Succeeded: true })
+                                {
+
+                                    <select class="custom-activity-type" name="@($"customActivityType-{item.ActivityId}")" data-activityId = "@item.ActivityId">
+                                        <option value="@ActivityType.Elliptic" selected="selected">Elliptical</option>
+                                        <option value="@ActivityType.Bicycle">Bicycle</option>
+                                        <option value="@ActivityType.VirtualRide">Stationary Bike</option>
+                                    </select>
                                 } else {
                                     @item.ActivityType.ToString()
                                 }

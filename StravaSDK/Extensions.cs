@@ -36,6 +36,11 @@ namespace StravaSDK
                     return StravaActivityType.Run;
                 case ActivityType.IceSkate:
                     return StravaActivityType.IceSkate;
+                case ActivityType.VirtualRide:
+                case ActivityType.Spinning:
+                    return StravaActivityType.VirtualRide;
+                case ActivityType.Bicycle:
+                    return StravaActivityType.Ride;
                 default:
                     return StravaActivityType.Workout;
             }
@@ -58,6 +63,13 @@ namespace StravaSDK
                     return StravaSportType.VirtualRun;
                 case ActivityType.IceSkate:
                     return StravaSportType.IceSkate;
+                case ActivityType.Bicycle:
+                    return StravaSportType.Ride;
+                case ActivityType.Elliptic:
+                    return StravaSportType.Elliptical;
+                case ActivityType.VirtualRide:
+                case ActivityType.Spinning:
+                    return StravaSportType.VirtualRide;
                 default:
                     return StravaSportType.Workout;
             }

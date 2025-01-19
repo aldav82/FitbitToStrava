@@ -30,12 +30,6 @@ namespace FitBitToStravaApp.Pages
 
             // Get the exception details
             var exceptionFeature = HttpContext.Features.Get<IExceptionHandlerPathFeature>();
-            //if ( != null)
-            //{
-            //    ExceptionMessage = exceptionFeature.Error.Message;
-            //    StackTrace = exceptionFeature.Error.StackTrace;
-            //}
-
             var exception = exceptionFeature?.Error;
             if (exception is FitbitRateLimitException)
             {
@@ -46,6 +40,7 @@ namespace FitBitToStravaApp.Pages
             {
                 this.ErrorCode = Request.Query["code"];
                 this.App = Request.Query["app"];
+                _logger.LogError(exception, "Unhandled error");
             }
         }
     }
