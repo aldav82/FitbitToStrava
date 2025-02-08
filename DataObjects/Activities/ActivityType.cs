@@ -19,6 +19,7 @@ namespace DataObjects.Activities
         Elliptic = 20047,
         Bicycle = 90001,
         Spinning= 55001,
+        Ski = 91053,
         // Custom Activities Not Supported by Fitbit
         VirtualRide = 10020047
     }

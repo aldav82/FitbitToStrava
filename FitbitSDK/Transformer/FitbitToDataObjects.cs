@@ -30,6 +30,8 @@ namespace FitbitSDK.Transformer
                     return await FillTcxActivity<IceSkate>(activity, accessToken);
                 case ActivityType.Bicycle:
                     return await FillTcxActivity<Bicycle>(activity, accessToken);
+                case ActivityType.Ski:
+                    return await FillTcxActivity<Ski>(activity, accessToken);
                 default:
                     return FillActivity<Aerobics>(activity);
 
@@ -38,12 +40,14 @@ namespace FitbitSDK.Transformer
 
         private static BaseActivity FillActivity<T>(Activities activity) where T : BaseActivity, new()
         {
-            T activityData = new T();
-            activityData.Name = activity.ActivityName;
-            activityData.StartDate = activity.OriginalStartTime.DateTime;
-            activityData.Duration = TimeSpan.FromMilliseconds(activity.Duration);
-            activityData.ActivityId = activity.LogId;
-            activityData.Distance = activity.GetDistanceInMeters();
+            T activityData = new T
+            {
+                Name = activity.ActivityName,
+                StartDate = activity.OriginalStartTime.DateTime,
+                Duration = TimeSpan.FromMilliseconds(activity.Duration),
+                ActivityId = activity.LogId,
+                Distance = activity.GetDistanceInMeters()
+            };
             return activityData;
         }
 

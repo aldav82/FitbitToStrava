@@ -92,6 +92,7 @@ namespace StravaSDK
                 case ActivityType.Treadmill:
                 case ActivityType.IceSkate:
                 case ActivityType.Bicycle:
+                case ActivityType.Ski:
                     FillDistanceExcerciseInformation(request, activity);
                     break;
             }
@@ -126,6 +127,7 @@ namespace StravaSDK
                 case ActivityType.Treadmill:
                 case ActivityType.Elliptic:
                 case ActivityType.Bicycle:
+                case ActivityType.Ski:
                     if (activity.ContainsTcx)
                     {
 
